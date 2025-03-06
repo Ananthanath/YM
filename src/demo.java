@@ -1,104 +1,165 @@
-class Queue {
-    private int maxSize;
-    private int[] queueArray;
-    private int front;
-    private int rear;
-    private int currentSize;
-
-    // Constructor to initialize the queue
-    public Queue(int size) {
-        this.maxSize = size;
-        this.queueArray = new int[maxSize];
-        this.front = 0;
-        this.rear = -1;
-        this.currentSize = 0;
-    }
-
-    // Enqueue operation: adds an element to the rear of the queue
-    public void enqueue(int value) {
-        if (isFull()) {
-            System.out.println("Queue is full. Cannot enqueue " + value);
-        } else {
-            rear = (rear + 1) % maxSize; // Circular increment
-            queueArray[rear] = value;
-            currentSize++;
-        }
-    }
-
-    // Dequeue operation: removes and returns the front element of the queue
-    public int dequeue() {
-        if (isEmpty()) {
-            throw new RuntimeException("Queue is empty. Cannot dequeue.");
-        } else {
-            int frontValue = queueArray[front];
-            front = (front + 1) % maxSize; // Circular increment
-            currentSize--;
-            return frontValue;
-        }
-    }
-
-    // Peek operation: returns the front element without removing it
-    public int peek() {
-        if (isEmpty()) {
-            throw new RuntimeException("Queue is empty. Cannot peek.");
-        } else {
-            return queueArray[front];
-        }
-    }
-
-    // isEmpty operation: checks if the queue is empty
-    public boolean isEmpty() {
-        return (currentSize == 0);
-    }
-
-    // isFull operation: checks if the queue is full
-    public boolean isFull() {
-        return (currentSize == maxSize);
-    }
-
-    // Size operation: returns the current size of the queue
-    public int size() {
-        return currentSize;
-    }
-
-    // Display operation: prints all elements in the queue
-    public void display() {
-        if (isEmpty()) {
-            System.out.println("Queue is empty");
-        } else {
-            System.out.print("Queue elements: ");
-            for (int i = 0; i < currentSize; i++) {
-                int index = (front + i) % maxSize;
-                System.out.print(queueArray[index] + " ");
-            }
-            System.out.println();
-        }
-    }
+class Mnode {
+	int data;
+	Mnode next;
+	Mnode pre;
 }
 
-// Testing the Queue
-public class demo {
-    public static void main(String[] args) {
-        Queue queue = new Queue(5);
+class Working {
+	Mnode head;
+	Mnode tail;
 
-        queue.enqueue(10);
-        queue.enqueue(20);
-        queue.enqueue(30);
+	void insertbegin(int num) {
+		Mnode newnode = new Mnode();
+		newnode.data = num;
+		newnode.next = null;
+		newnode.pre = null;
+		if (head == null) {
+			head = newnode;
+			tail = newnode;
+		} else {
+			head.next = newnode;
+			newnode.pre = head;
+			head = newnode;
+		}
+	}
 
-        System.out.println("Queue after enqueuing elements:");
-        queue.display();
+	void insertlast(int num) {
+		Mnode newnode = new Mnode();
+		newnode.data = num;
+		if (tail == null) {
+			insertbegin(num);
+		} else {
 
-        System.out.println("Peek front element: " + queue.peek());
+			tail.pre = newnode;
+			newnode.next = tail;
+			tail = newnode;
+		}
+	}
 
-        System.out.println("Dequeue front element: " + queue.dequeue());
+	void insertpos(int pos, int num) {
+		Mnode newnode = new Mnode();
+		Mnode temp = head;
+		newnode.data = num;
+		if (pos == 0) {
+			insertbegin(num);
+		} else {
+			for (int i = 1; i < pos; i++) {
+				temp = temp.pre;
+			}
+			newnode.pre = temp.pre;
+			newnode.pre.next = newnode;
+			newnode.next = temp;
+			newnode.next.pre = newnode;
 
-        System.out.println("Queue after dequeuing an element:");
-        queue.display();
+		}
+	}
 
-        System.out.println("Is queue empty? " + queue.isEmpty());
+	void removebegin() {
+		if (head != null) {
+			head = head.pre;
+		} else {
+			System.out.println("list empty");
+		}
+	}
+	void removelast()
+	{
+		if(tail!=null)
+		{
+			tail.next.pre=null;
+			tail=tail.next;	
 
-        System.out.println("Is queue full? " + queue.isFull());
+		}
+		else
+		{
+			System.out.println("no data in list");
+		}
+	}
+	void removepos(int pos)
+	{
+		Mnode temp = head;
+		if(pos<0)
+		{
+			System.out.println("index range from 0 to "+(size()-1));
+		}
+		else if(pos==0)
+		{
+			removebegin();
+		}
+		else {
+		for(int i=1;i<pos;i++)
+		{
+			temp=temp.pre;
+		}
+		
+		}
+	}
 
-        System.out.println("Current size of queue: " + queue.size());
-    }
+	void displaypos(int pos) {
+		Mnode temp = head;
+		if (pos >= size()) {
+			System.out.println("max length is " + (size() - 1));
+		} else {
+			for (int i = 0; i < pos; i++) {
+				temp = temp.pre;
+			}
+			System.out.println(temp.data);
+		}
+	}
+
+	void display() {
+		Mnode temp = head;
+		while (temp != null) {
+			System.out.println(temp.data);
+			temp = temp.pre;
+		}
+	}
+
+	void reversedisplay() {
+		Mnode temp = tail;
+		while (temp != null) {
+			System.out.println(temp.data);
+			temp = temp.next;
+		}
+	}
+
+	int size() {
+		Mnode temp = head;
+		int size = 0;
+		while (temp != null) {
+			size++;
+			temp = temp.pre;
+		}
+		return size;
+	}
+}
+
+public class Demo {
+	public static void main(String[] args) {
+		Working obj = new Working();
+		obj.insertbegin(20);
+		obj.insertbegin(40);
+		obj.display();
+		System.out.println();
+		obj.insertlast(10);
+		obj.insertlast(6);
+		obj.display();
+		System.out.println();
+		obj.insertpos(1, 30);
+		obj.display();
+		System.out.println();
+		obj.reversedisplay();
+		System.out.println();
+		System.out.println(obj.size());
+		System.out.println();
+		obj.removebegin();
+		obj.display();
+		System.out.println();
+		obj.displaypos(4);
+		System.out.println();
+		obj.removelast();
+		obj.display();
+		System.out.println();
+		System.out.println(obj.tail.data);
+
+	}
 }
